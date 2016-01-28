@@ -1,4 +1,4 @@
-package landomen.com.simpleweather.helpers;
+package landomen.com.simpleweather.views.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +18,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     private ArrayList<String> cities;
 
     public CityAdapter(ArrayList<String> cities) {
-        this.cities = cities;
+        this.cities = new ArrayList<>(cities);
     }
 
     @Override
@@ -38,6 +38,26 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return cities.size();
+    }
+
+    /**
+     * Adds a new item to the underlying dataset.
+     *
+     * @param item Item to add
+     */
+    public void addItem(String item) {
+        cities.add(item);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Changes the whole dataset.
+     *
+     * @param items
+     */
+    public void setItems(ArrayList<String> items) {
+        cities = new ArrayList<>(items);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

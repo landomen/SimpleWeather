@@ -14,15 +14,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import landomen.com.simpleweather.helpers.CityAdapter;
+import landomen.com.simpleweather.views.adapters.CityAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RQC_ADD = 539;
+    private static final String STATE_CITIES = "cities";
 
     private ArrayList<String> cities = new ArrayList<>();
     private TextView txtEmpty;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private CityAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
@@ -36,25 +37,46 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent addIntent = new Intent(MainActivity.this, AddActivity.class);
+                startActivityForResult(addIntent, RQC_ADD);
             }
         });
 
         // empty text message
         txtEmpty = (TextView) findViewById(R.id.main_empty_text);
+
         // list
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new CityAdapter(cities);
+        mRecyclerView.setAdapter(mAdapter);
 
-        // show empty message / create list adapter
+        // display list or message
         if (cities.size() > 0) {
             txtEmpty.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            mAdapter = new CityAdapter(cities);
-            mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(STATE_CITIES, cities);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        cities = savedInstanceState.getStringArrayList(STATE_CITIES);
+        if (cities == null)
+            cities = new ArrayList<>();
+        if (cities.size() > 0) {
+            txtEmpty.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+        mAdapter.setItems(cities);
     }
 
     @Override
@@ -83,7 +105,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RQC_ADD && resultCode == RESULT_OK) {
             if (data != null) {
-
+                String cityName = data.getStringExtra(AddActivity.EXTRA_CITY_NAME);
+                if (cityName != null && !cities.contains(cityName)) {
+                    // if list was hidden, show it now
+                    if (cities.size() == 0) {
+                        txtEmpty.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                    cities.add(cityName);
+                    mAdapter.addItem(cityName);
+                }
             }
         }
     }

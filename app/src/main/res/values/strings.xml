@@ -2,4 +2,8 @@
     <string name="app_name">SimpleWeather</string>
     <string name="action_settings">Settings</string>
     <string name="no_cities">There are no cities in your list.</string>
+    <string name="activity_add">Add City</string>
+    <string name="add_city_name_hint">City name</string>
+    <string name="add_city_hint">City</string>
+    <string name="add_city_btn">Add city</string>
 </resources>
