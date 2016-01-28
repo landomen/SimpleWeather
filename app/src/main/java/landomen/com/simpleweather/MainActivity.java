@@ -19,7 +19,7 @@ import landomen.com.simpleweather.views.adapters.CityAdapter;
 public class MainActivity extends AppCompatActivity implements CityAdapter.CityClickListener {
     private static final int RQC_ADD = 539;
     private static final String STATE_CITIES = "cities";
-    private static final String EXTRA_CITY = "landomen.com.simpleweather.City";
+    public static final String EXTRA_CITY = "landomen.com.simpleweather.City";
 
     private ArrayList<String> cities = new ArrayList<>();
     private TextView txtEmpty;

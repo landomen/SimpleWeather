@@ -6,4 +6,5 @@
     <string name="add_city_name_hint">City name</string>
     <string name="add_city_hint">City</string>
     <string name="add_city_btn">Add city</string>
+    <string name="activity_details">City Details</string>
 </resources>
