@@ -16,14 +16,15 @@ import java.util.ArrayList;
 
 import landomen.com.simpleweather.views.adapters.CityAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CityAdapter.CityClickListener {
     private static final int RQC_ADD = 539;
     private static final String STATE_CITIES = "cities";
+    private static final String EXTRA_CITY = "landomen.com.simpleweather.City";
 
     private ArrayList<String> cities = new ArrayList<>();
     private TextView txtEmpty;
     private RecyclerView mRecyclerView;
-    private CityAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new CityAdapter(cities);
+        ((CityAdapter) mAdapter).setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
         // display list or message
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             txtEmpty.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
         }
-        mAdapter.setItems(cities);
+        ((CityAdapter) mAdapter).setItems(cities);
     }
 
     @Override
@@ -113,9 +115,16 @@ public class MainActivity extends AppCompatActivity {
                         mRecyclerView.setVisibility(View.VISIBLE);
                     }
                     cities.add(cityName);
-                    mAdapter.addItem(cityName);
+                    ((CityAdapter) mAdapter).addItem(cityName);
                 }
             }
         }
+    }
+
+    @Override
+    public void onCityClicked(int position) {
+        Intent detailsIntent = new Intent(this, DetailsActivity.class);
+        detailsIntent.putExtra(EXTRA_CITY, cities.get(position));
+        startActivity(detailsIntent);
     }
 }

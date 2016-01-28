@@ -16,6 +16,7 @@ import landomen.com.simpleweather.R;
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     private ArrayList<String> cities;
+    private CityClickListener cityClickListener;
 
     public CityAdapter(ArrayList<String> cities) {
         this.cities = new ArrayList<>(cities);
@@ -60,12 +61,34 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * Sets the click listener for items.
+     *
+     * @param cityClickListener Callback for click events
+     */
+    public void setOnClickListener(CityClickListener cityClickListener) {
+        this.cityClickListener = cityClickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txTitle;
 
         public ViewHolder(View itemView) {
             super(itemView);
             txTitle = (TextView) itemView.findViewById(R.id.list_item_city_title);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            cityClickListener.onCityClicked(getAdapterPosition());
+        }
+    }
+
+    /**
+     * Interface for callback when click events happen.
+     */
+    public interface CityClickListener {
+        void onCityClicked(int position);
     }
 }
