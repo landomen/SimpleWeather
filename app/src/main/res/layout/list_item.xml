@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:padding="@dimen/list_item_padding">
+    android:paddingBottom="@dimen/list_item_padding"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/list_item_padding">
 
     <TextView
         android:id="@+id/list_item_city_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/list_item_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/list_item_city_title"
+        android:gravity="right"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone" />
+
+</RelativeLayout>

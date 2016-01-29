@@ -9,6 +9,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import landomen.com.simpleweather.R;
+import landomen.com.simpleweather.models.WeatherData;
+import landomen.com.simpleweather.network.RestClient;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by Domen on 27. 01. 2016.
@@ -32,8 +37,24 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.txTitle.setText(cities.get(position));
+
+        RestClient.get().getCityWeather(cities.get(position)).enqueue(new Callback<WeatherData>() {
+            @Override
+            public void onResponse(Response<WeatherData> response, Retrofit retrofit) {
+                if (response != null && response.body() != null) {
+                    holder.txTemp.setText(String.format("%d°C", (int) Math.round(response.body().getMain().getTemp())));
+                    holder.txTemp.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+
     }
 
     @Override
@@ -91,11 +112,12 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView txTitle;
+        TextView txTitle, txTemp;
 
         public ViewHolder(View itemView) {
             super(itemView);
             txTitle = (TextView) itemView.findViewById(R.id.list_item_city_title);
+            txTemp = (TextView) itemView.findViewById(R.id.list_item_temp);
             itemView.setOnClickListener(this);
         }
 

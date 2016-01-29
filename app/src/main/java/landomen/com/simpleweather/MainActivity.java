@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper itemTouchHelper;
+    private SwipeRefreshLayout mRefreshLayout;
 
     private SharedPreferences mPrefs;
 
@@ -73,10 +75,21 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
         itemTouchHelper = new ItemTouchHelper(cityItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh_layout);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.notifyDataSetChanged();
+                mRefreshLayout.setRefreshing(false);
+            }
+        });
+        mRefreshLayout.setEnabled(false);
+
         // display list or message
         if (cities.size() > 0) {
             txtEmpty.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+            mRefreshLayout.setEnabled(true);
         }
     }
 
@@ -98,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                     if (cities.size() == 0) {
                         txtEmpty.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.VISIBLE);
+                        mRefreshLayout.setEnabled(true);
                     }
                     cities.add(cityName);
                     ((CityAdapter) mAdapter).addItem(mAdapter.getItemCount(), cityName);
@@ -134,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                             if (cities.size() == 0) {
                                 txtEmpty.setVisibility(View.GONE);
                                 mRecyclerView.setVisibility(View.VISIBLE);
+                                mRefreshLayout.setEnabled(true);
                             }
                             // add the deleted item back to the adapter
                             ((CityAdapter) mAdapter).addItem(position, cityToDelete);
@@ -147,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
             if (cities.size() == 0) {
                 txtEmpty.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
+                mRefreshLayout.setEnabled(false);
             }
         }
     };

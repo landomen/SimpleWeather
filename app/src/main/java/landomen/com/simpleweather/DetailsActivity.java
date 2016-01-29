@@ -49,8 +49,8 @@ public class DetailsActivity extends AppCompatActivity {
                     WeatherData wd = response.body();
                     txtCity.setText(wd.getCity());
                     txtDesc.setText(wd.getWeather()[0].getDescription());
-                    txtTemp.setText(String.format("%d°C", (int) wd.getMain().getTemp()));
-                    txtHum.setText(String.format("%d%s", (int) wd.getMain().getHumidity(), "%"));
+                    txtTemp.setText(String.format("%d°C", (int) Math.round(wd.getMain().getTemp())));
+                    txtHum.setText(String.format("%d%s", (int) Math.round(wd.getMain().getHumidity()), "%"));
                     txtHumStatic.setVisibility(View.VISIBLE);
                 } else {
                     txtDesc.setText(R.string.details_no_weather);
