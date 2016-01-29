@@ -150,6 +150,12 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                     .setAction(R.string.main_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            // if list was hidden, show it now
+                            if (cities.size() == 0) {
+                                txtEmpty.setVisibility(View.GONE);
+                                mRecyclerView.setVisibility(View.VISIBLE);
+                            }
+                            // add the deleted item back to the adapter
                             ((CityAdapter) mAdapter).addItem(position, cityToDelete);
                             cities.add(position, cityToDelete);
                         }
@@ -157,6 +163,11 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
             snackbar.show();
             ((CityAdapter) mAdapter).removeItem(position);
             cities.remove(position);
+            //check if list is empty and show message
+            if (cities.size() == 0) {
+                txtEmpty.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
         }
     };
 }
