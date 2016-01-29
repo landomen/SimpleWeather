@@ -46,9 +46,19 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
      *
      * @param item Item to add
      */
-    public void addItem(String item) {
-        cities.add(item);
+    public void addItem(int position, String item) {
+        cities.add(position, item);
         notifyDataSetChanged();
+    }
+
+    /**
+     * Removes the item from the dataset at specified position.
+     *
+     * @param position
+     */
+    public void removeItem(int position) {
+        cities.remove(position);
+        notifyItemRemoved(position);
     }
 
     /**
@@ -59,6 +69,16 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     public void setItems(ArrayList<String> items) {
         cities = new ArrayList<>(items);
         notifyDataSetChanged();
+    }
+
+    /**
+     * Gets the item from the underlying dataset.
+     *
+     * @param position Index of the item
+     * @return
+     */
+    public String getItem(int position) {
+        return cities.get(position);
     }
 
     /**

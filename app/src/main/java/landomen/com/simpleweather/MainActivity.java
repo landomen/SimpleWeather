@@ -3,10 +3,12 @@ package landomen.com.simpleweather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ItemTouchHelper itemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
         mAdapter = new CityAdapter(cities);
         ((CityAdapter) mAdapter).setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        itemTouchHelper = new ItemTouchHelper(cityItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         // display list or message
         if (cities.size() > 0) {
@@ -115,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                         mRecyclerView.setVisibility(View.VISIBLE);
                     }
                     cities.add(cityName);
-                    ((CityAdapter) mAdapter).addItem(cityName);
+                    ((CityAdapter) mAdapter).addItem(mAdapter.getItemCount(), cityName);
                 }
             }
         }
@@ -127,4 +132,31 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
         detailsIntent.putExtra(EXTRA_CITY, cities.get(position));
         startActivity(detailsIntent);
     }
+
+    /**
+     * Left/right swipe listener for RecyclerView.
+     */
+    private ItemTouchHelper.SimpleCallback cityItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            final int position = viewHolder.getAdapterPosition();
+            final String cityToDelete = ((CityAdapter) mAdapter).getItem(position);
+            Snackbar snackbar = Snackbar.make(mRecyclerView, R.string.main_city_deleted, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.main_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((CityAdapter) mAdapter).addItem(position, cityToDelete);
+                            cities.add(position, cityToDelete);
+                        }
+                    });
+            snackbar.show();
+            ((CityAdapter) mAdapter).removeItem(position);
+            cities.remove(position);
+        }
+    };
 }
