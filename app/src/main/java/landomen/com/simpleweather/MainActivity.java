@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
 
     @Override
     public void onCityClicked(int position) {
+        // show details for selected city
         Intent detailsIntent = new Intent(this, DetailsActivity.class);
         detailsIntent.putExtra(EXTRA_CITY, cities.get(position));
         startActivity(detailsIntent);
@@ -138,8 +139,10 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            //get city to delete
             final int position = viewHolder.getAdapterPosition();
             final String cityToDelete = ((CityAdapter) mAdapter).getItem(position);
+            // show SnackBar with the undo option
             Snackbar snackbar = Snackbar.make(mRecyclerView, R.string.main_city_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.main_undo, new View.OnClickListener() {
                         @Override
@@ -156,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                         }
                     });
             snackbar.show();
+            // delete the item from the dataset
             ((CityAdapter) mAdapter).removeItem(position);
             cities.remove(position);
             //check if list is empty and show message

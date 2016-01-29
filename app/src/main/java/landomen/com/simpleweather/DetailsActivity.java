@@ -47,6 +47,7 @@ public class DetailsActivity extends AppCompatActivity {
                 pbLoading.setVisibility(View.GONE);
                 if (response != null && response.body() != null) {
                     WeatherData wd = response.body();
+                    // display weather details
                     txtCity.setText(wd.getCity());
                     txtDesc.setText(wd.getWeather()[0].getDescription());
                     txtTemp.setText(String.format("%d°C", (int) Math.round(wd.getMain().getTemp())));

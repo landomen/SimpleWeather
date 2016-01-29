@@ -25,8 +25,8 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        String cityName = nameWrapper.getEditText().getText().toString();
-        if (cityName.trim().isEmpty()) {
+        String cityName = nameWrapper.getEditText().getText().toString().trim();
+        if (cityName.isEmpty()) {
             nameWrapper.setError("Not a valid name!");
         } else {
             // exit activity and send back data

@@ -3,7 +3,7 @@ package landomen.com.simpleweather.models;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Domen on 29. 01. 2016.
+ * Represents JSON response from REST endpoint.
  */
 public class WeatherData {
     @SerializedName("name")

@@ -37,9 +37,10 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.txTitle.setText(cities.get(position));
 
+        //get latest temperature for the city
         RestClient.get().getCityWeather(cities.get(position)).enqueue(new Callback<WeatherData>() {
             @Override
             public void onResponse(Response<WeatherData> response, Retrofit retrofit) {
@@ -80,16 +81,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     public void removeItem(int position) {
         cities.remove(position);
         notifyItemRemoved(position);
-    }
-
-    /**
-     * Changes the whole dataset.
-     *
-     * @param items
-     */
-    public void setItems(ArrayList<String> items) {
-        cities = new ArrayList<>(items);
-        notifyDataSetChanged();
     }
 
     /**
