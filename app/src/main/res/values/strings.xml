@@ -7,4 +7,7 @@
     <string name="add_city_hint">City</string>
     <string name="add_city_btn">Add city</string>
     <string name="activity_details">City Details</string>
+    <string name="details_humidity">Humidity:</string>
+    <string name="details_no_weather">No weather information available!</string>
+    <string name="details_no_response">Couldn\'t retrieve weather information.</string>
 </resources>
