@@ -1,6 +1,7 @@
 package landomen.com.simpleweather;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,10 +10,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -21,14 +23,17 @@ import landomen.com.simpleweather.views.adapters.CityAdapter;
 public class MainActivity extends AppCompatActivity implements CityAdapter.CityClickListener {
     private static final int RQC_ADD = 539;
     private static final String STATE_CITIES = "cities";
+    private static final String PREFERENCES_KEY = "ListPreferences";
     public static final String EXTRA_CITY = "landomen.com.simpleweather.City";
 
-    private ArrayList<String> cities = new ArrayList<>();
+    private ArrayList<String> cities;
     private TextView txtEmpty;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper itemTouchHelper;
+
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,14 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
                 startActivityForResult(addIntent, RQC_ADD);
             }
         });
+
+        // get saved list of cities
+        mPrefs = getSharedPreferences(PREFERENCES_KEY, MODE_PRIVATE);
+        cities = new Gson().fromJson(mPrefs.getString(STATE_CITIES, ""), new TypeToken<ArrayList<String>>() {
+        }.getType());
+        if (cities == null) {
+            cities = new ArrayList<>();
+        }
 
         // empty text message
         txtEmpty = (TextView) findViewById(R.id.main_empty_text);
@@ -68,44 +81,11 @@ public class MainActivity extends AppCompatActivity implements CityAdapter.CityC
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList(STATE_CITIES, cities);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        cities = savedInstanceState.getStringArrayList(STATE_CITIES);
-        if (cities == null)
-            cities = new ArrayList<>();
-        if (cities.size() > 0) {
-            txtEmpty.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
-        ((CityAdapter) mAdapter).setItems(cities);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    protected void onPause() {
+        super.onPause();
+        // save list of cities
+        String json = new Gson().toJson(cities);
+        mPrefs.edit().putString(STATE_CITIES, json).apply();
     }
 
     @Override
